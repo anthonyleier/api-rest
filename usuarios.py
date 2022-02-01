@@ -7,8 +7,8 @@ class UsuariosGeral(Resource):
     def get(self):
         query = 'SELECT * FROM usuario;'
         dadosUsuarios = baseBlog.selecionar(query)
-        jsonRetorno = jsonify(dadosUsuarios)
-        return jsonRetorno
+        jsonResposta = jsonify(dadosUsuarios)
+        return jsonResposta
 
     def post(self):
         nome = request.json['nome']
@@ -18,12 +18,26 @@ class UsuariosGeral(Resource):
         INSERT INTO usuario (nome, email)
         VALUES ('{nome}', '{email}');
         """
-
         baseBlog.executar(query)
-        return 0
 
-    def put(self):
-        id = request.json['id']
+        query = f"""
+        SELECT * FROM usuario
+        WHERE nome = '{nome}'
+        AND email = '{email}';"""
+        dadosUsuario = baseBlog.selecionar(query)
+
+        jsonResposta = jsonify(dadosUsuario)
+        return jsonResposta
+
+
+class UsuarioPorID(Resource):
+    def get(self, id):
+        query = f"SELECT * FROM usuario WHERE id = {id};"
+        dadosUsuario = baseBlog.selecionar(query)
+        jsonResposta = jsonify(dadosUsuario)
+        return jsonResposta
+
+    def put(self, id):
         nome = request.json['nome']
         email = request.json['email']
 
@@ -32,19 +46,19 @@ class UsuariosGeral(Resource):
         nome = '{nome}', email = '{email}'
         WHERE id = {id};
         """
-
         baseBlog.executar(query)
-        return 0
 
-
-class UsuarioPorID(Resource):
-    def get(self, id):
-        query = f"SELECT * FROM usuario WHERE id = {id};"
+        query = f"""
+        SELECT * FROM usuario
+        WHERE id = {id};"""
         dadosUsuario = baseBlog.selecionar(query)
-        json = jsonify(dadosUsuario)
-        return json
+
+        jsonResposta = jsonify(dadosUsuario)
+        return jsonResposta
 
     def delete(self, id):
         query = f"DELETE FROM usuario WHERE id = {id};"
         baseBlog.executar(query)
-        return 0
+
+        jsonResposta = "{'status': 'success'}"
+        return jsonResposta
