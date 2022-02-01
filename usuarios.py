@@ -22,8 +22,8 @@ class UsuariosGeral(Resource):
 
         query = f"""
         SELECT * FROM usuario
-        WHERE nome = '{nome}'
-        AND email = '{email}';"""
+        WHERE email = '{email}';
+        """
         dadosUsuario = baseBlog.selecionar(query)
 
         jsonResposta = jsonify(dadosUsuario)
@@ -42,7 +42,7 @@ class UsuarioPorID(Resource):
         email = request.json['email']
 
         query = f"""
-        UPDATE usuario SET 
+        UPDATE usuario SET
         nome = '{nome}', email = '{email}'
         WHERE id = {id};
         """
