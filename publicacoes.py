@@ -13,17 +13,17 @@ class PublicacoesGeral(Resource):
     def post(self):
         titulo = request.json['titulo']
         texto = request.json['texto']
-        idUsuario = request.json['idUsuario']
+        usuario = request.json['usuario']
 
         query = f"""
         INSERT INTO publicacao (titulo, texto, usuario)
-        VALUES ('{titulo}', '{texto}', '{idUsuario});
+        VALUES ('{titulo}', '{texto}', {usuario});
         """
         baseBlog.executar(query)
 
         query = f"""
         SELECT * FROM publicacao
-        WHERE usuario = '{idUsuario}';
+        WHERE usuario = '{usuario}';
         """
         dadosPublicacoes = baseBlog.selecionar(query)
 
@@ -41,13 +41,13 @@ class PublicacaoPorID(Resource):
     def put(self, id):
         titulo = request.json['titulo']
         texto = request.json['texto']
-        idUsuario = request.json['idUsuario']
+        usuario = request.json['usuario']
 
         query = f"""
         UPDATE publicacao SET 
         titulo = '{titulo}', 
         texto = '{texto}',
-        usuario = '{idUsuario}'
+        usuario = '{usuario}'
         WHERE id = {id};
         """
         baseBlog.executar(query)
@@ -65,5 +65,5 @@ class PublicacaoPorID(Resource):
         query = f"DELETE FROM publicacao WHERE id = {id};"
         baseBlog.executar(query)
 
-        jsonResposta = "{'status': 'success'}"
+        jsonResposta = jsonify({'status': 'success'})
         return jsonResposta
