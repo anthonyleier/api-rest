@@ -1,14 +1,13 @@
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
 from config import baseBlog
-from funcoes import gerarJson
 
 
 class UsuariosGeral(Resource):
     def get(self):
         query = 'SELECT * FROM usuario;'
         dadosUsuarios = baseBlog.selecionar(query)
-        jsonRetorno = gerarJson(dadosUsuarios)
+        jsonRetorno = jsonify(dadosUsuarios)
         return jsonRetorno
 
     def post(self):
@@ -41,8 +40,8 @@ class UsuariosGeral(Resource):
 class UsuarioPorID(Resource):
     def get(self, id):
         query = f"SELECT * FROM usuario WHERE id = {id};"
-        dados = baseBlog.selecionar(query)
-        json = gerarJson(dados)
+        dadosUsuario = baseBlog.selecionar(query)
+        json = jsonify(dadosUsuario)
         return json
 
     def delete(self, id):
