@@ -7,7 +7,6 @@ class Banco:
         try:
             self.conexao = psycopg2.connect(
                 host=host, database=db, user='postgres', password='postgres')
-            self.conexao.set_client_encoding('LATIN1')
         except:
             print("Não foi possivel conectar ao banco de dados. Verifique as informações da conexão e tente novamente")
 
