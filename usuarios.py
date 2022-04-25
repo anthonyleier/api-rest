@@ -1,64 +1,58 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from config import baseBlog
+from config import baseDelivery
 
 
-class UsuariosGeral(Resource):
+class Usuarios(Resource):
     def get(self):
-        query = 'SELECT * FROM usuario;'
-        dadosUsuarios = baseBlog.selecionar(query)
+        query = "SELECT * FROM usuario;"
+        dadosUsuarios = baseDelivery.selecionar(query)
         jsonResposta = jsonify(dadosUsuarios)
         return jsonResposta
 
     def post(self):
         nome = request.json['nome']
         email = request.json['email']
+        senha = request.json['senha']
 
         query = f"""
-        INSERT INTO usuario (nome, email)
-        VALUES ('{nome}', '{email}');
+        INSERT INTO usuario (nome, email, senha)
+        VALUES (%s, %s, %s)
+        RETURNING ID;
         """
-        baseBlog.executar(query)
+        parametros = (nome, email, senha)
+        status = baseDelivery.executar(query, parametros)
 
-        query = f"""
-        SELECT * FROM usuario
-        WHERE email = '{email}';
-        """
-        dadosUsuario = baseBlog.selecionar(query)
-
-        jsonResposta = jsonify(dadosUsuario)
+        jsonResposta = jsonify(status)
         return jsonResposta
 
 
 class UsuarioPorID(Resource):
     def get(self, id):
-        query = f"SELECT * FROM usuario WHERE id = {id};"
-        dadosUsuario = baseBlog.selecionar(query)
+        query = f"SELECT * FROM usuario WHERE id = %s;"
+        parametros = (id)
+        dadosUsuario = baseDelivery.selecionarUm(query, parametros)
         jsonResposta = jsonify(dadosUsuario)
         return jsonResposta
 
     def put(self, id):
         nome = request.json['nome']
         email = request.json['email']
+        senha = request.json['senha']
 
         query = f"""
-        UPDATE usuario SET
-        nome = '{nome}', email = '{email}'
-        WHERE id = {id};
+        UPDATE usuario SET nome = %s, email = %s, senha = %s
+        WHERE id = %s RETURNING ID;
         """
-        baseBlog.executar(query)
+        parametros = (nome, email, senha, id)
+        status = baseDelivery.executar(query, parametros)
 
-        query = f"""
-        SELECT * FROM usuario
-        WHERE id = {id};"""
-        dadosUsuario = baseBlog.selecionar(query)
-
-        jsonResposta = jsonify(dadosUsuario)
+        jsonResposta = jsonify(status)
         return jsonResposta
 
     def delete(self, id):
-        query = f"DELETE FROM usuario WHERE id = {id};"
-        baseBlog.executar(query)
-
-        jsonResposta = "{'status': 'success'}"
+        query = f"DELETE FROM usuario WHERE id = %s;"
+        parametros = (id)
+        status = baseDelivery.executar(query, parametros)
+        jsonResposta = jsonify(status)
         return jsonResposta
