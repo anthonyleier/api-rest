@@ -30,7 +30,7 @@ class Usuarios(Resource):
 class UsuarioPorID(Resource):
     def get(self, id):
         query = f"SELECT * FROM usuario WHERE id = %s;"
-        parametros = (id)
+        parametros = [id]
         dadosUsuario = baseDelivery.selecionarUm(query, parametros)
         jsonResposta = jsonify(dadosUsuario)
         return jsonResposta
@@ -44,15 +44,15 @@ class UsuarioPorID(Resource):
         UPDATE usuario SET nome = %s, email = %s, senha = %s
         WHERE id = %s RETURNING ID;
         """
-        parametros = (nome, email, senha, id)
+        parametros = [nome, email, senha, id]
         status = baseDelivery.executar(query, parametros)
 
         jsonResposta = jsonify(status)
         return jsonResposta
 
     def delete(self, id):
-        query = f"DELETE FROM usuario WHERE id = %s;"
-        parametros = (id)
+        query = f"DELETE FROM usuario WHERE id = %s RETURNING ID;"
+        parametros = [id]
         status = baseDelivery.executar(query, parametros)
         jsonResposta = jsonify(status)
         return jsonResposta
