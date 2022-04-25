@@ -29,7 +29,8 @@ class Banco:
 
     def selecionarUm(self, query):
         try:
-            cursor = self.conexao.cursor()
+            cursor = self.conexao.cursor(
+                cursor_factory=psycopg2.extras.RealDictCursor)
         except:
             print("Não foi possível se conectar ao banco")
 
@@ -60,6 +61,6 @@ class Banco:
 
     def fecharConexao(self):
         try:
-            self.conexao.close()
+            self.conexao.close
         except:
             print("Não foi possível fechar a conexão")
