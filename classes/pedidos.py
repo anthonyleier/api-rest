@@ -1,66 +1,50 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from config import baseBlog
+from config import baseDelivery
 
 
 class Pedidos(Resource):
     def get(self):
-        query = 'SELECT * FROM pedidos;'
-        dadosPedidoss = baseBlog.selecionar(query)
-        jsonResposta = jsonify(dadosPedidoss)
+        query = "SELECT * FROM pedido;"
+        dadosPedidos = baseDelivery.selecionar(query)
+
+        jsonResposta = jsonify(dadosPedidos)
         return jsonResposta
 
     def post(self):
-        titulo = request.json['titulo']
-        texto = request.json['texto']
         usuario = request.json['usuario']
 
-        query = f"""
-        INSERT INTO pedidos (titulo, texto, usuario)
-        VALUES ('{titulo}', '{texto}', {usuario});
-        """
-        baseBlog.executar(query)
+        query = "INSERT INTO pedido (usuario) VALUES (%s) RETURNING id;"
+        parametros = [usuario]
+        status = baseDelivery.executar(query, parametros)
 
-        query = f"""
-        SELECT * FROM Pedidos
-        WHERE usuario = '{usuario}';
-        """
-        dadosPedidoss = baseBlog.selecionar(query)
-
-        jsonResposta = jsonify(dadosPedidoss)
+        jsonResposta = jsonify(status)
         return jsonResposta
 
 
 class PedidoPorID(Resource):
     def get(self, id):
-        query = f"SELECT * FROM pedidos WHERE id = {id};"
-        dadosPedidos = baseBlog.selecionar(query)
-        jsonResposta = jsonify(dadosPedidos)
+        query = "SELECT * FROM pedido WHERE id = %s;"
+        parametros = [id]
+        dadosPedido = baseDelivery.selecionarUm(query, parametros)
+
+        jsonResposta = jsonify(dadosPedido)
         return jsonResposta
 
     def put(self, id):
-        titulo = request.json['titulo']
-        texto = request.json['texto']
         usuario = request.json['usuario']
 
-        query = f"""
-        UPDATE pedidos SET
-        titulo = '{titulo}',
-        texto = '{texto}',
-        usuario = '{usuario}'
-        WHERE id = {id};
-        """
-        baseBlog.executar(query)
+        query = "UPDATE pedido SET usuario = %s WHERE id = %s;"
+        parametros = [usuario, id]
+        status = baseDelivery.executar(query, parametros)
 
-        query = f"SELECT * FROM pedidos WHERE id = {id};"
-        dadosPedidos = baseBlog.selecionar(query)
-
-        jsonResposta = jsonify(dadosPedidos)
+        jsonResposta = jsonify(status)
         return jsonResposta
 
     def delete(self, id):
-        query = f"DELETE FROM Pedidos WHERE id = {id};"
-        status = baseBlog.executar(query)
+        query = "DELETE FROM pedido WHERE id = %s;"
+        parametros = [id]
+        status = baseDelivery.executar(query, parametros)
 
-        jsonResposta = jsonify({'status': status})
+        jsonResposta = jsonify(status)
         return jsonResposta
