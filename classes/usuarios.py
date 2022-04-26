@@ -16,12 +16,11 @@ class Usuarios(Resource):
         email = request.json['email']
         senha = request.json['senha']
 
-        query = f"""
+        query = """
         INSERT INTO usuario (nome, email, senha)
-        VALUES (%s, %s, %s)
-        RETURNING ID;
+        VALUES (%s, %s, %s) RETURNING ID;
         """
-        parametros = (nome, email, senha)
+        parametros = [nome, email, senha]
         status = baseDelivery.executar(query, parametros)
 
         jsonResposta = jsonify(status)
@@ -30,7 +29,7 @@ class Usuarios(Resource):
 
 class UsuarioPorID(Resource):
     def get(self, id):
-        query = f"SELECT * FROM usuario WHERE id = %s;"
+        query = "SELECT * FROM usuario WHERE id = %s;"
         parametros = [id]
         dadosUsuario = baseDelivery.selecionarUm(query, parametros)
 
@@ -42,7 +41,7 @@ class UsuarioPorID(Resource):
         email = request.json['email']
         senha = request.json['senha']
 
-        query = f"""
+        query = """
         UPDATE usuario SET nome = %s, email = %s, senha = %s
         WHERE id = %s RETURNING ID;
         """
@@ -53,7 +52,7 @@ class UsuarioPorID(Resource):
         return jsonResposta
 
     def delete(self, id):
-        query = f"DELETE FROM usuario WHERE id = %s RETURNING ID;"
+        query = "DELETE FROM usuario WHERE id = %s RETURNING ID;"
         parametros = [id]
         status = baseDelivery.executar(query, parametros)
 

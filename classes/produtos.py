@@ -5,22 +5,58 @@ from config import baseDelivery
 
 class Produtos(Resource):
     def get(self):
-        query = f"SELECT * FROM produto;"
+        query = "SELECT * FROM produto;"
         dadosProdutos = baseDelivery.selecionar(query)
 
         jsonResposta = jsonify(dadosProdutos)
         return jsonResposta
 
     def post(self):
-        pass
+        nome = request.json['nome']
+        descricao = request.json['descricao']
+        valor = request.json['valor']
+        imagem = request.json['imagem']
+
+        query = """
+        INSERT INTO produto (nome, descricao, valor, imagem)
+        VALUES (%s, %s, %s, %s) RETURNING id;
+        """
+        parametros = [nome, descricao, valor, imagem]
+        status = baseDelivery.executar(query, parametros)
+
+        jsonResposta = jsonify(status)
+        return jsonResposta
 
 
 class ProdutoPorID(Resource):
     def get(self, id):
-        pass
+        query = "SELECT * FROM produto WHERE id = %s;"
+        parametros = [id]
+        dadosProduto = baseDelivery.selecionarUm(query, parametros)
+
+        jsonResposta = jsonify(dadosProduto)
+        return jsonResposta
 
     def put(self, id):
-        pass
+        nome = request.json['nome']
+        descricao = request.json['descricao']
+        valor = request.json['valor']
+        imagem = request.json['imagem']
+
+        query = """
+        UPDATE produto SET nome = %s, descricao = %s, valor = %s, imagem = %s
+        WHERE id = %s RETURNING id;
+        """
+        parametros = [nome, descricao, valor, imagem, id]
+        status = baseDelivery.executar(query, parametros)
+
+        jsonResposta = jsonify(status)
+        return jsonResposta
 
     def delete(self, id):
-        pass
+        query = "DELETE FROM produto WHERE id = %s RETURNING id;"
+        parametros = [id]
+        status = baseDelivery.executar(query, parametros)
+
+        jsonResposta = jsonify(status)
+        return jsonResposta
