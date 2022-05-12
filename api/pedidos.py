@@ -1,6 +1,6 @@
+from config import baseDelivery
 from flask import request, jsonify
 from flask_restful import Resource
-from config import baseDelivery
 from funcoes.pedidos import getListaPedidos, criarPedido, getPedido
 
 
@@ -28,7 +28,7 @@ class PedidoPorID(Resource):
         usuario = request.json['usuario']
         produtos = request.json['produtos']
         pedido = atualizarPedido(usuario, produtos)
-        
+
         return jsonResposta
 
     def delete(self, id):

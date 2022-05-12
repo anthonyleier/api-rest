@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_restful import Api
-from classes.usuarios import Usuarios, UsuarioPorID
-from classes.produtos import Produtos, ProdutoPorID
-from classes.pedidos import Pedidos, PedidoPorID
+from api.pedidos import Pedidos, PedidoPorID
+from api.usuarios import Usuarios, UsuarioPorID
+from api.produtos import Produtos, ProdutoPorID
 
 app = Flask(__name__)
 api = Api(app)

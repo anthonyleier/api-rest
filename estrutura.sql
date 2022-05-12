@@ -1,4 +1,3 @@
--- Estrutura do banco de dados (PostgreSQL)
 -- Usuário
 DROP TABLE IF EXISTS usuario CASCADE;
 

@@ -1,7 +1,7 @@
 from config import baseDelivery
 
 
-def getPedidos():
+def getListaPedidos():
     query = """
     SELECT pedido.id, pedido.usuario,
     ARRAY_AGG(pedido_produto.produto) AS produtos
@@ -27,22 +27,24 @@ def criarPedido(usuario, produtos):
     resposta = {'pedido': pedido, 'produtos': produtos}
     return resposta
 
-def getPedidoID(id):
+
+def getPedido(id):
     query = """
-        SELECT pedido.id, pedido.usuario, pedido_produto.produto, pedido_produto.quantidade FROM pedido
-        LEFT JOIN pedido_produto
-        ON pedido_produto.pedido = pedido.id
-        WHERE pedido.id = %s;
-        """
-        parametros = [id]
-        dadosPedido = baseDelivery.selecionarUm(query, parametros)
-    
+    SELECT pedido.id, pedido.usuario, pedido_produto.produto, pedido_produto.quantidade FROM pedido
+    LEFT JOIN pedido_produto
+    ON pedido_produto.pedido = pedido.id
+    WHERE pedido.id = %s;
+    """
+    parametros = [id]
+    dadosPedido = baseDelivery.selecionarUm(query, parametros)
+
     return dadosPedido
+
 
 def atualizarPedido(id):
     query = "UPDATE pedido SET usuario = %s WHERE id = %s;"
-        parametros = [usuario, id]
-        status = baseDelivery.executar(query, parametros)
+    parametros = [usuario, id]
+    status = baseDelivery.executar(query, parametros)
 
-        jsonResposta = jsonify(status)
-    
+    jsonResposta = jsonify(status)
+    return jsonResposta
