@@ -71,4 +71,7 @@ CREATE TABLE pedido_produto (
 INSERT INTO
     pedido_produto (pedido, produto, quantidade)
 VALUES
-    (1, 1, 5);
+    (1, 1, 5),
+    (1, 1, 10),
+    (1, 1, 15),
+    (1, 1, 20);
