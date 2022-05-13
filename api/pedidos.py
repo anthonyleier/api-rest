@@ -1,7 +1,7 @@
-from config import baseDelivery
 from flask import request, jsonify
 from flask_restful import Resource
-from funcoes.pedidos import getListaPedidos, criarPedido, getPedido
+from funcoes.pedidos import getListaPedidos, criarPedido
+from funcoes.pedidos import getPedido, atualizarPedido, deletarPedido
 
 
 class Pedidos(Resource):
@@ -27,18 +27,11 @@ class PedidoPorID(Resource):
     def put(self, id):
         usuario = request.json['usuario']
         produtos = request.json['produtos']
-        pedido = atualizarPedido(usuario, produtos)
-
-        return jsonResposta
+        pedido = atualizarPedido(usuario, produtos, id)
+        json = jsonify(pedido)
+        return json
 
     def delete(self, id):
-        query = "DELETE FROM pedido_produto WHERE pedido = %s;"
-        parametros = [id]
-        status = baseDelivery.executar(query, parametros)
-
-        query = "DELETE FROM pedido WHERE id = %s;"
-        parametros = [id]
-        status = baseDelivery.executar(query, parametros)
-
-        jsonResposta = jsonify(status)
-        return jsonResposta
+        pedido = deletarPedido(id)
+        json = jsonify(pedido)
+        return json

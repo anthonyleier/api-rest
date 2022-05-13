@@ -1,62 +1,41 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from config import baseDelivery
+from funcoes.produtos import getListaProdutos, criarProduto
+from funcoes.produtos import getProduto, atualizarProduto, deletarProduto
 
 
 class Produtos(Resource):
     def get(self):
-        query = "SELECT * FROM produto;"
-        dadosProdutos = baseDelivery.selecionar(query)
-
-        jsonResposta = jsonify(dadosProdutos)
-        return jsonResposta
+        listaProdutos = getListaProdutos()
+        json = jsonify(listaProdutos)
+        return json
 
     def post(self):
         nome = request.json['nome']
         descricao = request.json['descricao']
         valor = request.json['valor']
         imagem = request.json['imagem']
-
-        query = """
-        INSERT INTO produto (nome, descricao, valor, imagem)
-        VALUES (%s, %s, %s, %s) RETURNING id;
-        """
-        parametros = [nome, descricao, valor, imagem]
-        status = baseDelivery.executar(query, parametros)
-
-        jsonResposta = jsonify(status)
-        return jsonResposta
+        produto = criarProduto(nome, descricao, valor, imagem)
+        json = jsonify(produto)
+        return json
 
 
 class ProdutoPorID(Resource):
     def get(self, id):
-        query = "SELECT * FROM produto WHERE id = %s;"
-        parametros = [id]
-        dadosProduto = baseDelivery.selecionarUm(query, parametros)
-
-        jsonResposta = jsonify(dadosProduto)
-        return jsonResposta
+        produto = getProduto(id)
+        json = jsonify(produto)
+        return json
 
     def put(self, id):
         nome = request.json['nome']
         descricao = request.json['descricao']
         valor = request.json['valor']
         imagem = request.json['imagem']
-
-        query = """
-        UPDATE produto SET nome = %s, descricao = %s, valor = %s, imagem = %s
-        WHERE id = %s RETURNING id;
-        """
-        parametros = [nome, descricao, valor, imagem, id]
-        status = baseDelivery.executar(query, parametros)
-
-        jsonResposta = jsonify(status)
-        return jsonResposta
+        produto = atualizarProduto(nome, descricao, valor, imagem, id)
+        json = jsonify(produto)
+        return json
 
     def delete(self, id):
-        query = "DELETE FROM produto WHERE id = %s RETURNING id;"
-        parametros = [id]
-        status = baseDelivery.executar(query, parametros)
-
-        jsonResposta = jsonify(status)
-        return jsonResposta
+        produto = deletarProduto(id)
+        json = jsonify(produto)
+        return json
