@@ -1,7 +1,7 @@
 from config import baseDelivery
 
 
-def getUsuario():
+def getUsuario(id):
     query = "SELECT * FROM usuario WHERE id = %s;"
     parametros = [id]
     dadosUsuario = baseDelivery.selecionarUm(query, parametros)
@@ -14,25 +14,30 @@ def getListaUsuarios():
     return listaUsuarios
 
 
-def criarUsuario():
-    query = """
-        INSERT INTO usuario (nome, email, senha)
-        VALUES (%s, %s, %s) ;
-        """
+def criarUsuario(nome, email, senha):
+    query = "INSERT INTO usuario (nome, email, senha) VALUES (%s, %s, %s);"
     parametros = [nome, email, senha]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
+
+    query = "SELECT * FROM usuario WHERE nome = %s AND email = %s AND senha = %s;"
+    dadosUsuario = baseDelivery.selecionarUm(query, parametros)
+    return dadosUsuario
 
 
-def atualizarUsuario():
-    query = """
-        UPDATE usuario SET nome = %s, email = %s, senha = %s
-        WHERE id = %s ;
-        """
+def atualizarUsuario(nome, email, senha, id):
+    query = "UPDATE usuario SET nome = %s, email = %s, senha = %s WHERE id = %s;"
     parametros = [nome, email, senha, id]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
+
+    dadosUsuario = getUsuario(id)
+    return dadosUsuario
 
 
-def deletarUsuario():
-    query = "DELETE FROM usuario WHERE id = %s ;"
+def deletarUsuario(id):
+    query = "DELETE FROM usuario WHERE id = %s;"
     parametros = [id]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
+
+    dadosUsuario = getUsuario(id)
+    foiDeletado = len(dadosUsuario) == 0
+    return foiDeletado
