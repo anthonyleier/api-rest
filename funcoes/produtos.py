@@ -15,12 +15,12 @@ def getListaProdutos():
 
 
 def criarProduto(nome, descricao, valor, imagem):
-    query = "INSERT INTO produto (nome, descricao, valor, imagem) VALUES (%s, %s, %s, %s);"
+    query = "INSERT INTO produto (nome, descricao, valor, imagem) VALUES (%s, %s, %s, %s) RETURNING id;"
     parametros = [nome, descricao, valor, imagem]
-    baseDelivery.executar(query, parametros)
+    dados = baseDelivery.executar(query, parametros)
+    id = dados['id']
 
-    query = "SELECT * FROM produto WHERE nome = %s AND descricao = %s AND valor = %s AND imagem = %s;"
-    dadosProduto = baseDelivery.selecionarUm(query, parametros)
+    dadosProduto = getProduto(id)
     return dadosProduto
 
 
@@ -33,8 +33,8 @@ def atualizarProduto(nome, descricao, valor, imagem, id):
     return dadosProduto
 
 
-def deletarProduto():
-    query = "DELETE FROM produto WHERE id = %s ;"
+def deletarProduto(id):
+    query = "DELETE FROM produto WHERE id = %s;"
     parametros = [id]
     baseDelivery.executar(query, parametros)
 

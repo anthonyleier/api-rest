@@ -1,17 +1,19 @@
 import unittest
 import requests
-from config import baseDelivery
+from banco import Banco
 
 
 url = "http://localhost:5000/"
+ipAcesso = 'localhost'
+nomeBanco = 'delivery'
+baseDelivery = Banco(ipAcesso, nomeBanco)
 
 
 class UsuarioTestes(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        with open('estrutura.sql', 'r', encoding='utf-8') as arquivo:
-            dados = arquivo.read()
-            baseDelivery.executar(dados)
+        endpoint = url + 'reset'
+        requests.get(endpoint)
 
     def test_getUsuario(self):
         endpoint = url + "usuarios/12"
@@ -33,20 +35,102 @@ class UsuarioTestes(unittest.TestCase):
 
     def test_criarUsuario(self):
         endpoint = url + "usuarios"
-        dados = {'id': 21, 'nome': 'Luke Skywalker', 'email': 'lukeskywalker@gmail.com', 'senha': 'luke123'}
+        dados = {'nome': 'Luke Skywalker', 'email': 'lukeskywalker@gmail.com', 'senha': 'luke123'}
         request = requests.post(endpoint, json=dados)
-        self.assertEqual(dados, request.json())
+        json = request.json()
+        json.pop('id', None)
+        self.assertEqual(dados, json)
         self.assertEqual(200, request.status_code)
 
     def test_atualizarUsuario(self):
-        endpoint = url + "usuarios/2"
-        dados = {'id': 2, 'nome': 'Ahsoka Tano', 'email': 'ahsokatano@gmail.com', 'senha': 'ahsoka123'}
+        endpoint = url + "usuarios/5"
+        dados = {'id': 5, 'nome': 'Ahsoka Tano', 'email': 'ahsokatano@gmail.com', 'senha': 'ahsoka123'}
         request = requests.put(endpoint, json=dados)
         self.assertEqual(dados, request.json())
         self.assertEqual(200, request.status_code)
 
     def test_deletarUsuario(self):
-        endpoint = url + "usuarios/1"
+        endpoint = url + "usuarios/10"
+        request = requests.delete(endpoint)
+        self.assertTrue(request.json)
+        self.assertEqual(200, request.status_code)
+
+
+class ProdutoTestes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        endpoint = url + 'reset'
+        requests.get(endpoint)
+
+    def test_getProduto(self):
+        endpoint = url + "produtos/1"
+        request = requests.get(endpoint)
+        exemplo = {
+            "id": 1,
+            "nome": "X-Salada",
+            "descricao": "Pão, maionese, alface, tomate, queijo e hambúrguer artesanal.",
+            "valor": 11.0,
+            "imagem": "https://static.deliverymuch.com.br/images/products/602ff217d5554.png"
+        }
+        self.assertEqual(exemplo, request.json())
+        self.assertEqual(200, request.status_code)
+
+    def test_getListaProdutos(self):
+        endpoint = url + "produtos"
+        request = requests.get(endpoint)
+
+        exemplo1 = {
+            "id": 2,
+            "nome": 'X-Calabresa',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e calabresa.',
+            "valor": 16,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/60217fc2316e8.png'
+        }
+
+        exemplo2 = {
+            "id": 3,
+            "nome": 'X-Bacon',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e bacon.',
+            "valor": 17,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602ff18425507.png'
+        }
+
+        self.assertIn(exemplo1, request.json())
+        self.assertIn(exemplo2, request.json())
+        self.assertEqual(200, request.status_code)
+
+    def test_criarProduto(self):
+        endpoint = url + "produtos"
+
+        dados = {
+            "id": 6,
+            "nome": 'X-Contra Filé',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
+            "valor": 19,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
+        }
+
+        request = requests.post(endpoint, json=dados)
+        self.assertEqual(dados, request.json())
+        self.assertEqual(200, request.status_code)
+
+    def test_atualizarProduto(self):
+        endpoint = url + "produtos/4"
+
+        dados = {
+            "id": 4,
+            "nome": 'X-Picanha',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
+            "valor": 20,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/6021880d5b686.png'
+        }
+
+        request = requests.put(endpoint, json=dados)
+        self.assertEqual(dados, request.json())
+        self.assertEqual(200, request.status_code)
+
+    def test_deletarProduto(self):
+        endpoint = url + "produtos/6"
         request = requests.delete(endpoint)
         self.assertTrue(request.json)
         self.assertEqual(200, request.status_code)

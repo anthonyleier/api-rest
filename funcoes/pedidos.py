@@ -21,30 +21,47 @@ def getListaPedidos():
 
 
 def criarPedido(usuario, produtos):
-    query = "INSERT INTO pedido (usuario) VALUES (%s);"
+    query = "INSERT INTO pedido (usuario) VALUES (%s) RETURNING id;"
     parametros = [usuario]
-    pedido = baseDelivery.executar(query, parametros)
+    dados = baseDelivery.executar(query, parametros)
+    id = dados['id']
 
-    for produto in produtos:
-        query = "INSERT INTO pedido_produto (pedido, produto) VALUES (%s, %s);"
-        parametros = [pedido, produto]
+    for produto, quantidade in produtos:
+        query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
+        parametros = [id, produto, quantidade]
         baseDelivery.executar(query, parametros)
 
-    resposta = {'pedido': pedido, 'produtos': produtos}
-    return resposta
+    dadosPedido = getPedido(id)
+    return dadosPedido
 
 
-def atualizarPedido(id, usuario):
+def atualizarPedido(usuario, produtos, id):
     query = "UPDATE pedido SET usuario = %s WHERE id = %s;"
     parametros = [usuario, id]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
+
+    query = "DELETE FROM pedido_produto WHERE pedido = %s;"
+    parametros = [id]
+    baseDelivery.executar(query, parametros)
+
+    for produto, quantidade in produtos:
+        query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
+        parametros = [id, produto, quantidade]
+        baseDelivery.executar(query, parametros)
+
+    dadosPedido = getPedido(id)
+    return dadosPedido
 
 
 def deletarPedido(id):
     query = "DELETE FROM pedido_produto WHERE pedido = %s;"
     parametros = [id]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
 
     query = "DELETE FROM pedido WHERE id = %s;"
     parametros = [id]
-    status = baseDelivery.executar(query, parametros)
+    baseDelivery.executar(query, parametros)
+
+    dadosPedido = getPedido(id)
+    foiDeletado = not dadosPedido
+    return foiDeletado

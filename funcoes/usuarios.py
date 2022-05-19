@@ -15,12 +15,12 @@ def getListaUsuarios():
 
 
 def criarUsuario(nome, email, senha):
-    query = "INSERT INTO usuario (nome, email, senha) VALUES (%s, %s, %s);"
+    query = "INSERT INTO usuario (nome, email, senha) VALUES (%s, %s, %s) RETURNING id;"
     parametros = [nome, email, senha]
-    baseDelivery.executar(query, parametros)
+    dados = baseDelivery.executar(query, parametros)
+    id = dados['id']
 
-    query = "SELECT * FROM usuario WHERE nome = %s AND email = %s AND senha = %s;"
-    dadosUsuario = baseDelivery.selecionarUm(query, parametros)
+    dadosUsuario = getUsuario(id)
     return dadosUsuario
 
 
