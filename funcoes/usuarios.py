@@ -39,5 +39,5 @@ def deletarUsuario(id):
     baseDelivery.executar(query, parametros)
 
     dadosUsuario = getUsuario(id)
-    foiDeletado = len(dadosUsuario) == 0
+    foiDeletado = not dadosUsuario
     return foiDeletado
