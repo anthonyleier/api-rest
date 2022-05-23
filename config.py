@@ -1,6 +1,6 @@
 from banco import Banco
 
-ipAcesso = 'localhost'
+ipAcesso = 'database'
 nomeBanco = 'delivery'
 
 baseDelivery = Banco(ipAcesso, nomeBanco)

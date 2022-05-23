@@ -1,3 +1,7 @@
+CREATE DATABASE delivery;
+
+\c delivery
+
 -- Usuário
 DROP TABLE IF EXISTS usuario CASCADE;
 

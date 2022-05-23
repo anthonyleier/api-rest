@@ -1,0 +1,24 @@
+volumes:
+    dados:
+        driver: local
+
+services:
+    server:
+        build: .
+        ports:
+            - 5000:5000
+        volumes:
+            - .:/delivery-api
+        depends_on:
+            - database
+        working_dir: /delivery-api
+        command: main.py
+
+    database:
+        image: postgres:14.3
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        volumes:
+            - dados:/var/lib/postgresql/data
+            - ./estrutura.sql:/docker-entrypoint-initdb.d/estrutura.sql
