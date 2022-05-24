@@ -8,7 +8,6 @@ class Usuarios(Resource):
     def get(self):
         listaUsuarios = getListaUsuarios()
         json = jsonify(listaUsuarios)
-        print(listaUsuarios)
         return json
 
     def post(self):

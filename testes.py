@@ -1,20 +1,11 @@
 import unittest
 import requests
-from banco import Banco
 
 
 url = "http://localhost:5000/"
-ipAcesso = 'localhost'
-nomeBanco = 'delivery'
-baseDelivery = Banco(ipAcesso, nomeBanco)
 
 
 class UsuarioTestes(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        endpoint = url + 'reset'
-        requests.get(endpoint)
-
     def test_getUsuario(self):
         endpoint = url + "usuarios/12"
         request = requests.get(endpoint)
@@ -57,11 +48,6 @@ class UsuarioTestes(unittest.TestCase):
 
 
 class ProdutoTestes(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        endpoint = url + 'reset'
-        requests.get(endpoint)
-
     def test_getProduto(self):
         endpoint = url + "produtos/1"
         request = requests.get(endpoint)
@@ -103,15 +89,16 @@ class ProdutoTestes(unittest.TestCase):
         endpoint = url + "produtos"
 
         dados = {
-            "id": 6,
             "nome": 'X-Contra Filé',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
-            "valor": 19,
+            "valor": 19.0,
             "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
         }
 
         request = requests.post(endpoint, json=dados)
-        self.assertEqual(dados, request.json())
+        json = request.json()
+        del json['id']
+        self.assertEqual(dados, json)
         self.assertEqual(200, request.status_code)
 
     def test_atualizarProduto(self):

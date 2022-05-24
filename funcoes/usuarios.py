@@ -34,6 +34,19 @@ def atualizarUsuario(nome, email, senha, id):
 
 
 def deletarUsuario(id):
+    query = "SELECT id FROM pedido WHERE usuario = %s;"
+    parametros = [id]
+    pedidos = baseDelivery.selecionar(query, parametros)
+
+    for pedido in pedidos:
+        query = "DELETE FROM pedido_produto WHERE pedido = %s;"
+        parametros = [pedido['id']]
+        baseDelivery.executar(query, parametros)
+
+        query = "DELETE FROM pedido where id = %s;"
+        parametros = [pedido['id']]
+        baseDelivery.executar(query, parametros)
+
     query = "DELETE FROM usuario WHERE id = %s;"
     parametros = [id]
     baseDelivery.executar(query, parametros)
