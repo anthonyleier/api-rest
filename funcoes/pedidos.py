@@ -20,13 +20,13 @@ def getListaPedidos():
     return dadosPedidos
 
 
-def criarPedido(usuario, produtos):
+def criarPedido(usuario, produtos, quantidades):
     query = "INSERT INTO pedido (usuario) VALUES (%s) RETURNING id;"
     parametros = [usuario]
     dados = baseDelivery.executar(query, parametros)
     id = dados['id']
 
-    for produto, quantidade in produtos:
+    for produto, quantidade in produtos, quantidades:
         query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
         parametros = [id, produto, quantidade]
         baseDelivery.executar(query, parametros)

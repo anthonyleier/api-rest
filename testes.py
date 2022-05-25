@@ -1,71 +1,107 @@
 import unittest
 import requests
 
+# Erros
+# Acertos
+# Códigos de erros
+# Retornos
+# Padronizar
 
-url = "http://localhost:5000/"
+dominio = "http://localhost:5000/"
 
 
 class UsuarioTestes(unittest.TestCase):
     def test_getUsuario(self):
-        endpoint = url + "usuarios/12"
-        request = requests.get(endpoint)
-        exemplo = {"id": 12, "nome": "Lara Costa", "email": "lara.costa@hotmail.com", "senha": "lara123"}
-        self.assertEqual(exemplo, request.json())
-        self.assertEqual(200, request.status_code)
+        usuarioTeste = {"id": 12, "nome": "Lara Costa", "email": "lara.costa@hotmail.com", "senha": "lara123"}
+
+        endpoint = "usuarios/12"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(usuarioTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_getListaUsuarios(self):
-        endpoint = url + "usuarios"
-        request = requests.get(endpoint)
-        exemplo1 = {"id": 3, "nome": "Lucas Carvalho", "email": "lucas.carvalho@gmail.com", "senha": "lucas123"}
-        exemplo2 = {"id": 4, "nome": "Rafaela Barros", "email": "rafaela.barros@gmail.com", "senha": "rafaela123"}
-        exemplo3 = {"id": 14, "nome": "Gabrielly Fernandes", "email": "gabrielly.fernandes@hotmail.com", "senha": "gabrielly123"}
-        self.assertIn(exemplo1, request.json())
-        self.assertIn(exemplo2, request.json())
-        self.assertIn(exemplo3, request.json())
-        self.assertEqual(200, request.status_code)
+        usuarioTeste1 = {"id": 3, "nome": "Lucas Carvalho", "email": "lucas.carvalho@gmail.com", "senha": "lucas123"}
+        usuarioTeste2 = {"id": 4, "nome": "Rafaela Barros", "email": "rafaela.barros@gmail.com", "senha": "rafaela123"}
+        usuarioTeste3 = {"id": 14, "nome": "Gabrielly Fernandes", "email": "gabrielly.fernandes@hotmail.com", "senha": "gabrielly123"}
+
+        endpoint = "usuarios"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertIn(usuarioTeste1, requestJSON)
+        self.assertIn(usuarioTeste2, requestJSON)
+        self.assertIn(usuarioTeste3, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_criarUsuario(self):
-        endpoint = url + "usuarios"
-        dados = {'nome': 'Luke Skywalker', 'email': 'lukeskywalker@gmail.com', 'senha': 'luke123'}
-        request = requests.post(endpoint, json=dados)
-        json = request.json()
-        json.pop('id', None)
-        self.assertEqual(dados, json)
-        self.assertEqual(200, request.status_code)
+        usuarioTeste = {'nome': 'Luke Skywalker', 'email': 'lukeskywalker@gmail.com', 'senha': 'luke123'}
+
+        endpoint = "usuarios"
+        url = dominio + endpoint
+
+        request = requests.post(url, json=usuarioTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+        requestJSON.pop('id', None)
+
+        self.assertEqual(usuarioTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_atualizarUsuario(self):
-        endpoint = url + "usuarios/5"
-        dados = {'id': 5, 'nome': 'Ahsoka Tano', 'email': 'ahsokatano@gmail.com', 'senha': 'ahsoka123'}
-        request = requests.put(endpoint, json=dados)
-        self.assertEqual(dados, request.json())
-        self.assertEqual(200, request.status_code)
+        usuarioTeste = {'id': 5, 'nome': 'Ahsoka Tano', 'email': 'ahsokatano@gmail.com', 'senha': 'ahsoka123'}
+
+        endpoint = "usuarios/5"
+        url = dominio + endpoint
+
+        request = requests.put(url, json=usuarioTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(usuarioTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_deletarUsuario(self):
-        endpoint = url + "usuarios/10"
-        request = requests.delete(endpoint)
-        self.assertTrue(request.json)
-        self.assertEqual(200, request.status_code)
+        endpoint = "usuarios/10"
+        url = dominio + endpoint
+
+        request = requests.delete(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertTrue(requestJSON)
+        self.assertEqual(200, statusCode)
 
 
 class ProdutoTestes(unittest.TestCase):
     def test_getProduto(self):
-        endpoint = url + "produtos/1"
-        request = requests.get(endpoint)
-        exemplo = {
+        produtoTeste = {
             "id": 1,
             "nome": "X-Salada",
             "descricao": "Pão, maionese, alface, tomate, queijo e hambúrguer artesanal.",
             "valor": 11.0,
             "imagem": "https://static.deliverymuch.com.br/images/products/602ff217d5554.png"
         }
-        self.assertEqual(exemplo, request.json())
-        self.assertEqual(200, request.status_code)
+
+        endpoint = "produtos/1"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(produtoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_getListaProdutos(self):
-        endpoint = url + "produtos"
-        request = requests.get(endpoint)
-
-        exemplo1 = {
+        produtoTeste1 = {
             "id": 2,
             "nome": 'X-Calabresa',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e calabresa.',
@@ -73,7 +109,7 @@ class ProdutoTestes(unittest.TestCase):
             "imagem": 'https://static.deliverymuch.com.br/images/products/60217fc2316e8.png'
         }
 
-        exemplo2 = {
+        produtoTeste2 = {
             "id": 3,
             "nome": 'X-Bacon',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e bacon.',
@@ -81,30 +117,47 @@ class ProdutoTestes(unittest.TestCase):
             "imagem": 'https://static.deliverymuch.com.br/images/products/602ff18425507.png'
         }
 
-        self.assertIn(exemplo1, request.json())
-        self.assertIn(exemplo2, request.json())
-        self.assertEqual(200, request.status_code)
+        produtoTeste3 = {
+            "id": 5,
+            "nome": 'X-Coração',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e coração.',
+            "valor": 18,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602180428eaf5.png'
+        }
+
+        endpoint = "produtos"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertIn(produtoTeste1, requestJSON)
+        self.assertIn(produtoTeste2, requestJSON)
+        self.assertIn(produtoTeste3, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_criarProduto(self):
-        endpoint = url + "produtos"
-
-        dados = {
+        produtoTeste = {
             "nome": 'X-Contra Filé',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
             "valor": 19.0,
             "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
         }
 
-        request = requests.post(endpoint, json=dados)
-        json = request.json()
-        del json['id']
-        self.assertEqual(dados, json)
-        self.assertEqual(200, request.status_code)
+        endpoint = "produtos"
+        url = dominio + endpoint
+
+        request = requests.post(url, json=produtoTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+        requestJSON.pop('id', None)
+
+        self.assertEqual(produtoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_atualizarProduto(self):
-        endpoint = url + "produtos/4"
-
-        dados = {
+        produtoTeste = {
             "id": 4,
             "nome": 'X-Picanha',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
@@ -112,15 +165,154 @@ class ProdutoTestes(unittest.TestCase):
             "imagem": 'https://static.deliverymuch.com.br/images/products/6021880d5b686.png'
         }
 
-        request = requests.put(endpoint, json=dados)
-        self.assertEqual(dados, request.json())
-        self.assertEqual(200, request.status_code)
+        endpoint = "produtos/4"
+        url = dominio + endpoint
+
+        request = requests.put(url, json=produtoTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(produtoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
 
     def test_deletarProduto(self):
-        endpoint = url + "produtos/6"
-        request = requests.delete(endpoint)
-        self.assertTrue(request.json)
-        self.assertEqual(200, request.status_code)
+        endpoint = "produtos/6"
+        url = dominio + endpoint
+
+        request = requests.delete(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertTrue(requestJSON)
+        self.assertEqual(200, statusCode)
+
+
+class PedidoTestes(unittest.TestCase):
+    def test_getPedido(self):
+        pedidoTeste = {
+            "id": 1,
+            "usuario": 1,
+            "produtos": [1, 2],
+            "quantidades": [1, 1]
+        }
+
+        endpoint = "pedidos/1"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(pedidoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    def test_getListaPedidos(self):
+        pedidoTeste1 = {
+            "pedido": 2,
+            "usuario": 2,
+            "produtos": [2, 3],
+            "quantidades": [1, 1]
+        }
+
+        pedidoTeste2 = {
+            "pedido": 3,
+            "usuario": 3,
+            "produtos": [3, 4],
+            "quantidades": [1, 1]
+        }
+
+        pedidoTeste3 = {
+            "pedido": 4,
+            "usuario": 4,
+            "produtos": [4, 5],
+            "quantidades": [1, 1]
+        }
+
+        endpoint = "pedidos"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertIn(pedidoTeste1, requestJSON)
+        self.assertIn(pedidoTeste2, requestJSON)
+        self.assertIn(pedidoTeste3, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    def test_criarPedido(self):
+        pedidoTeste = {
+            "usuario": 11,
+            "produtos": [2, 4],
+            "quantidades": [1, 2]
+        }
+
+        endpoint = "pedidos"
+        url = dominio + endpoint
+
+        request = requests.post(url, json=pedidoTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(pedidoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    def test_adicionarItemPedido(self):
+        itemTeste = {
+            "produtos": [3, 4],
+            "quantidades": [1, 1]
+        }
+
+        pedidoTeste = {
+            "pedido": 4,
+            "usuario": 4,
+            "produtos": [3, 4, 5],
+            "quantidades": [1, 2, 1]
+        }
+
+        endpoint = "pedidos/4/adicionar"
+        url = dominio + endpoint
+
+        request = requests.put(url, json=itemTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(pedidoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    def test_removerItemPedido(self):
+        itemTeste = {
+            "produtos": [5, 1],
+            "quantidades": [1, 1]
+        }
+
+        pedidoTeste = {
+            "pedido": 10,
+            "usuario": 10,
+            "produtos": [],
+            "quantidades": []
+        }
+
+        endpoint = "pedidos/4/remover"
+        url = dominio + endpoint
+
+        request = requests.put(url, json=itemTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(pedidoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    def test_excluirPedido(self):
+        endpoint = "pedidos/6"
+        url = dominio + endpoint
+
+        request = requests.delete(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertTrue(requestJSON)
+        self.assertEqual(200, statusCode)
 
 
 if __name__ == '__main__':
