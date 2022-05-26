@@ -22,14 +22,6 @@ api.add_resource(Pedidos, '/pedidos')
 api.add_resource(PedidoPorID, '/pedidos/<id>')
 
 
-@app.route("/reset")
-def reset():
-    with open('estrutura.sql', 'r', encoding='UTF-8') as arquivo:
-        dados = arquivo.read()
-        baseDelivery.executar(dados)
-    return "reset"
-
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
     baseDelivery.fecharConexao()

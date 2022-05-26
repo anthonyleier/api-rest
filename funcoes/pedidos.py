@@ -5,9 +5,8 @@ def getPedido(id):
     query = """
     SELECT
         pedido.id, pedido.usuario,
-        ARRAY_AGG(CONCAT(
-            pedido_produto.produto, ',', pedido_produto.quantidade
-        )) AS carrinho
+        ARRAY_AGG(pedido_produto.produto) AS produtos,
+        ARRAY_AGG(pedido_produto.quantidade) AS quantidades
     FROM pedido
     LEFT JOIN pedido_produto ON pedido_produto.pedido = pedido.id
     WHERE pedido.id = %s
@@ -15,13 +14,10 @@ def getPedido(id):
     """
     parametros = [id]
     dados = baseDelivery.selecionar(query, parametros)
-    dadosPedido = dados[0]
-    for item in dadosPedido['carrinho']:
-        print(type(item))
-        print(item)
-        elementos = item.split(',')
-        dadosPedido['carrinho'].append([elementos[0], elementos[1]])
-    return dadosPedido
+
+    if dados:
+        dadosPedido = dados[0]
+        return dadosPedido
 
 
 def getListaPedidos():
@@ -38,13 +34,13 @@ def getListaPedidos():
     return dadosPedidos
 
 
-def criarPedido(usuario, carrinho):
+def criarPedido(usuario, produtos, quantidades):
     query = "INSERT INTO pedido (usuario) VALUES (%s) RETURNING id;"
     parametros = [usuario]
     dados = baseDelivery.executar(query, parametros)
     id = dados['id']
 
-    for produto, quantidade in carrinho:
+    for produto, quantidade in zip(produtos, quantidades):
         query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
         parametros = [id, produto, quantidade]
         baseDelivery.executar(query, parametros)

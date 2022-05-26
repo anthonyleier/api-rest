@@ -12,8 +12,9 @@ class Pedidos(Resource):
 
     def post(self):
         usuario = request.json['usuario']
-        carrinho = request.json['carrinho']
-        pedido = criarPedido(usuario, carrinho)
+        produtos = request.json['produtos']
+        quantidades = request.json['quantidades']
+        pedido = criarPedido(usuario, produtos, quantidades)
         json = jsonify(pedido)
         return json
 
