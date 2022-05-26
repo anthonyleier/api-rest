@@ -99,7 +99,7 @@ class PedidoTestes(unittest.TestCase):
         requestJSON.pop('id', None)
 
         self.assertEqual(pedidoTeste, requestJSON)
-        self.assertEqual(200, statusCode)
+        self.assertEqual(201, statusCode)
 
     def test_atualizarProdutoPedido_adicionar(self):
         produtoTeste = {

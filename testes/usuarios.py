@@ -48,7 +48,7 @@ class UsuarioTestes(unittest.TestCase):
         requestJSON.pop('id', None)
 
         self.assertEqual(usuarioTeste, requestJSON)
-        self.assertEqual(200, statusCode)
+        self.assertEqual(201, statusCode)
 
     def test_atualizarUsuario(self):
         usuarioTeste = {'id': 5, 'nome': 'Ahsoka Tano', 'email': 'ahsokatano@gmail.com', 'senha': 'ahsoka123'}
