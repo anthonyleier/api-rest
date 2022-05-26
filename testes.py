@@ -183,6 +183,21 @@ class ProdutoTestes(unittest.TestCase):
 
 
 class PedidoTestes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pedidoTeste = {
+            "usuario": 13,
+            "produtos": [2, 4, 5],
+            "quantidades": [4, 8, 12]
+        }
+
+        endpoint = "pedidos"
+        url = dominio + endpoint
+
+        request = requests.post(url, json=pedidoTeste)
+        requestJSON = request.json()
+        cls.pedidoExemplo = requestJSON['id']
+
     def test_getPedido(self):
         pedidoTeste = {
             "id": 1,
@@ -255,24 +270,24 @@ class PedidoTestes(unittest.TestCase):
 
     def test_atualizarProdutoPedido_adicionar(self):
         produtoTeste = {
-            "usuario": 4,
-            "produtos": [2, 5],
-            "quantidades": [1, 1]
+            "usuario": 15,
+            "produtos": [1, 2, 4],
+            "quantidades": [1, 2, 3]
         }
 
         pedidoTeste = {
-            "id": 5,
-            "usuario": 4,
-            "produtos": [1, 2, 5],
-            "quantidades": [1, 2, 2]
+            "usuario": 15,
+            "produtos": [1, 2, 4, 5],
+            "quantidades": [1, 6, 11, 12]
         }
 
-        endpoint = "pedidos/5"
+        endpoint = f"pedidos/{self.pedidoExemplo}"
         url = dominio + endpoint
 
         request = requests.put(url, json=produtoTeste)
         statusCode = request.status_code
         requestJSON = request.json()
+        requestJSON.pop('id', None)
 
         self.assertEqual(pedidoTeste, requestJSON)
         self.assertEqual(200, statusCode)

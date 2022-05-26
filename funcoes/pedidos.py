@@ -5,8 +5,8 @@ def getPedido(id):
     query = """
     SELECT
         pedido.id, pedido.usuario,
-        ARRAY_AGG(pedido_produto.produto) AS produtos,
-        ARRAY_AGG(pedido_produto.quantidade) AS quantidades
+        ARRAY_AGG(pedido_produto.produto ORDER BY pedido_produto.produto) AS produtos,
+        ARRAY_AGG(pedido_produto.quantidade ORDER BY pedido_produto.produto) AS quantidades
     FROM pedido
     LEFT JOIN pedido_produto ON pedido_produto.pedido = pedido.id
     WHERE pedido.id = %s
@@ -16,16 +16,15 @@ def getPedido(id):
     dados = baseDelivery.selecionar(query, parametros)
 
     if dados:
-        dadosPedido = dados[0]
-        return dadosPedido
+        return dados[0]
 
 
 def getListaPedidos():
     query = """
     SELECT
         pedido.id, pedido.usuario,
-        ARRAY_AGG(pedido_produto.produto) AS produtos,
-        ARRAY_AGG(pedido_produto.quantidade) AS quantidades
+        ARRAY_AGG(pedido_produto.produto ORDER BY pedido_produto.produto) AS produtos,
+        ARRAY_AGG(pedido_produto.quantidade ORDER BY pedido_produto.produto) AS quantidades
     FROM pedido
     LEFT JOIN pedido_produto ON pedido_produto.pedido = pedido.id
     GROUP BY pedido.id;
@@ -40,7 +39,10 @@ def criarPedido(usuario, produtos, quantidades):
     dados = baseDelivery.executar(query, parametros)
     id = dados['id']
 
-    for produto, quantidade in zip(produtos, quantidades):
+    itens = list(zip(produtos, quantidades))
+    itensOrdenados = sorted(itens, key=lambda x: x[1])
+
+    for produto, quantidade in itensOrdenados:
         query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
         parametros = [id, produto, quantidade]
         baseDelivery.executar(query, parametros)
@@ -54,7 +56,10 @@ def atualizarProdutoPedido(usuario, produtos, quantidades, id):
     parametros = [usuario, id]
     baseDelivery.executar(query, parametros)
 
-    for produto, quantidade in zip(produtos, quantidades):
+    itens = list(zip(produtos, quantidades))
+    itensOrdenados = sorted(itens, key=lambda x: x[1])
+
+    for produto, quantidade in itensOrdenados:
         query = "SELECT * FROM pedido_produto WHERE pedido = %s AND produto = %s;"
         parametros = [id, produto]
         dados = baseDelivery.selecionarUm(query, parametros)
@@ -63,9 +68,11 @@ def atualizarProdutoPedido(usuario, produtos, quantidades, id):
             quantidadeAtual = dados['quantidade']
             quantidadeAtual += quantidade
             quantidadeAtual = quantidadeAtual if quantidadeAtual > 0 else 0
-            query = "UPDATE pedido_produto SET quantidade = %s WHERE pedido = %s;"
-            parametros = [quantidadeAtual, id]
+
+            query = "UPDATE pedido_produto SET quantidade = %s WHERE pedido = %s AND produto = %s;"
+            parametros = [quantidadeAtual, id, produto]
             baseDelivery.executar(query, parametros)
+
         elif quantidade > 0:
             query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
             parametros = [id, produto, quantidade]
