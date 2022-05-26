@@ -253,46 +253,48 @@ class PedidoTestes(unittest.TestCase):
         self.assertEqual(pedidoTeste, requestJSON)
         self.assertEqual(200, statusCode)
 
-    # def test_adicionarItemPedido(self):
-    #     itemTeste = {
-    #         "produtos": [3, 4],
-    #         "quantidades": [1, 1]
+    def test_atualizarProdutoPedido_adicionar(self):
+        produtoTeste = {
+            "usuario": 4,
+            "produtos": [2, 5],
+            "quantidades": [1, 1]
+        }
+
+        pedidoTeste = {
+            "id": 5,
+            "usuario": 4,
+            "produtos": [1, 2, 5],
+            "quantidades": [1, 2, 2]
+        }
+
+        endpoint = "pedidos/5"
+        url = dominio + endpoint
+
+        request = requests.put(url, json=produtoTeste)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(pedidoTeste, requestJSON)
+        self.assertEqual(200, statusCode)
+
+    # def test_atualizarProdutoPedido_remover(self):
+    #     produtoTeste = {
+    #         "usuario": 5,
+    #         "produtos": [2, 3, 4],
+    #         "quantidades": [-1, -1, -1]
     #     }
 
     #     pedidoTeste = {
-    #         "pedido": 4,
-    #         "usuario": 4,
-    #         "produtos": [3, 4, 5],
-    #         "quantidades": [1, 2, 1]
+    #         "id": 7,
+    #         "usuario": 5,
+    #         "produtos": [2, 3],
+    #         "quantidades": [0, 0]
     #     }
 
-    #     endpoint = "pedidos/4/adicionar"
+    #     endpoint = "pedidos/7"
     #     url = dominio + endpoint
 
-    #     request = requests.put(url, json=itemTeste)
-    #     statusCode = request.status_code
-    #     requestJSON = request.json()
-
-    #     self.assertEqual(pedidoTeste, requestJSON)
-    #     self.assertEqual(200, statusCode)
-
-    # def test_removerItemPedido(self):
-    #     itemTeste = {
-    #         "produtos": [5, 1],
-    #         "quantidades": [1, 1]
-    #     }
-
-    #     pedidoTeste = {
-    #         "pedido": 10,
-    #         "usuario": 10,
-    #         "produtos": [],
-    #         "quantidades": []
-    #     }
-
-    #     endpoint = "pedidos/4/remover"
-    #     url = dominio + endpoint
-
-    #     request = requests.put(url, json=itemTeste)
+    #     request = requests.put(url, json=produtoTeste)
     #     statusCode = request.status_code
     #     requestJSON = request.json()
 

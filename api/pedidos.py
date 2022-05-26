@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from flask_restful import Resource
 from funcoes.pedidos import getListaPedidos, criarPedido
-from funcoes.pedidos import getPedido, atualizarPedido, deletarPedido
+from funcoes.pedidos import getPedido, atualizarProdutoPedido, deletarPedido
 
 
 class Pedidos(Resource):
@@ -28,7 +28,8 @@ class PedidoPorID(Resource):
     def put(self, id):
         usuario = request.json['usuario']
         produtos = request.json['produtos']
-        pedido = atualizarPedido(usuario, produtos, id)
+        quantidades = request.json['quantidades']
+        pedido = atualizarProdutoPedido(usuario, produtos, quantidades, id)
         json = jsonify(pedido)
         return json
 

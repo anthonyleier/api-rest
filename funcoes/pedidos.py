@@ -49,19 +49,27 @@ def criarPedido(usuario, produtos, quantidades):
     return dadosPedido
 
 
-def atualizarPedido(usuario, produtos, id):
+def atualizarProdutoPedido(usuario, produtos, quantidades, id):
     query = "UPDATE pedido SET usuario = %s WHERE id = %s;"
     parametros = [usuario, id]
     baseDelivery.executar(query, parametros)
 
-    query = "DELETE FROM pedido_produto WHERE pedido = %s;"
-    parametros = [id]
-    baseDelivery.executar(query, parametros)
+    for produto, quantidade in zip(produtos, quantidades):
+        query = "SELECT * FROM pedido_produto WHERE pedido = %s AND produto = %s;"
+        parametros = [id, produto]
+        dados = baseDelivery.selecionarUm(query, parametros)
 
-    for produto, quantidade in produtos:
-        query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
-        parametros = [id, produto, quantidade]
-        baseDelivery.executar(query, parametros)
+        if dados:
+            quantidadeAtual = dados['quantidade']
+            quantidadeAtual += quantidade
+            quantidadeAtual = quantidadeAtual if quantidadeAtual > 0 else 0
+            query = "UPDATE pedido_produto SET quantidade = %s WHERE pedido = %s;"
+            parametros = [quantidadeAtual, id]
+            baseDelivery.executar(query, parametros)
+        elif quantidade > 0:
+            query = "INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES (%s, %s, %s);"
+            parametros = [id, produto, quantidade]
+            baseDelivery.executar(query, parametros)
 
     dadosPedido = getPedido(id)
     return dadosPedido
