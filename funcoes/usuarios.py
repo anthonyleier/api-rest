@@ -1,4 +1,4 @@
-from config import baseDelivery
+from config import baseDelivery, chaveNecessaria
 
 
 def getUsuario(id):
@@ -14,6 +14,7 @@ def getListaUsuarios():
     return listaUsuarios
 
 
+@chaveNecessaria
 def criarUsuario(nome, email, senha):
     query = "INSERT INTO usuario (nome, email, senha) VALUES (%s, %s, %s) RETURNING id;"
     parametros = [nome, email, senha]
@@ -24,6 +25,7 @@ def criarUsuario(nome, email, senha):
     return dadosUsuario
 
 
+@chaveNecessaria
 def atualizarUsuario(nome, email, senha, id):
     query = "UPDATE usuario SET nome = %s, email = %s, senha = %s WHERE id = %s;"
     parametros = [nome, email, senha, id]
@@ -33,6 +35,7 @@ def atualizarUsuario(nome, email, senha, id):
     return dadosUsuario
 
 
+@chaveNecessaria
 def deletarUsuario(id):
     query = "SELECT id FROM pedido WHERE usuario = %s;"
     parametros = [id]

@@ -3,6 +3,7 @@ import requests
 
 
 dominio = "http://localhost:5000/"
+autenticacao = {'api_key': '974ff5366ebab83585cf8406e8548ca3', 'Content-Type': 'application/json'}
 
 
 class UsuarioTestes(unittest.TestCase):
@@ -42,7 +43,9 @@ class UsuarioTestes(unittest.TestCase):
         endpoint = "usuarios"
         url = dominio + endpoint
 
-        request = requests.post(url, json=usuarioTeste)
+        json = {**usuarioTeste, **autenticacao}
+        request = requests.post(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
         requestJSON.pop('id', None)
@@ -56,7 +59,9 @@ class UsuarioTestes(unittest.TestCase):
         endpoint = "usuarios/5"
         url = dominio + endpoint
 
-        request = requests.put(url, json=usuarioTeste)
+        json = {**usuarioTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
 
@@ -67,7 +72,9 @@ class UsuarioTestes(unittest.TestCase):
         endpoint = "usuarios/10"
         url = dominio + endpoint
 
-        request = requests.delete(url)
+        json = {**autenticacao}
+        request = requests.delete(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
 

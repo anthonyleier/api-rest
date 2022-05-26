@@ -3,6 +3,7 @@ import requests
 
 
 dominio = "http://localhost:5000/"
+autenticacao = {'api_key': '974ff5366ebab83585cf8406e8548ca3', 'Content-Type': 'application/json'}
 
 
 class PedidoTestes(unittest.TestCase):
@@ -23,11 +24,15 @@ class PedidoTestes(unittest.TestCase):
         endpoint = "pedidos"
         url = dominio + endpoint
 
-        request = requests.post(url, json=pedidoTeste1)
+        json = {**pedidoTeste1, **autenticacao}
+        request = requests.post(url, json=json)
+
         requestJSON = request.json()
         cls.pedidoExemplo1 = requestJSON['id']
 
-        request = requests.post(url, json=pedidoTeste2)
+        json = {**pedidoTeste2, **autenticacao}
+        request = requests.post(url, json=json)
+
         requestJSON = request.json()
         cls.pedidoExemplo2 = requestJSON['id']
 
@@ -93,7 +98,9 @@ class PedidoTestes(unittest.TestCase):
         endpoint = "pedidos"
         url = dominio + endpoint
 
-        request = requests.post(url, json=pedidoTeste)
+        json = {**pedidoTeste, **autenticacao}
+        request = requests.post(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
         requestJSON.pop('id', None)
@@ -117,7 +124,9 @@ class PedidoTestes(unittest.TestCase):
         endpoint = f"pedidos/{self.pedidoExemplo1}"
         url = dominio + endpoint
 
-        request = requests.put(url, json=produtoTeste)
+        json = {**produtoTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
         requestJSON.pop('id', None)
@@ -141,7 +150,9 @@ class PedidoTestes(unittest.TestCase):
         endpoint = f"pedidos/{self.pedidoExemplo2}"
         url = dominio + endpoint
 
-        request = requests.put(url, json=produtoTeste)
+        json = {**produtoTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
         requestJSON.pop('id', None)
@@ -153,7 +164,9 @@ class PedidoTestes(unittest.TestCase):
         endpoint = "pedidos/6"
         url = dominio + endpoint
 
-        request = requests.delete(url)
+        json = {**autenticacao}
+        request = requests.delete(url, json=json)
+
         statusCode = request.status_code
         requestJSON = request.json()
 

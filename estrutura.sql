@@ -100,3 +100,13 @@ INSERT INTO pedido_produto (pedido, produto, quantidade) VALUES
 (18, 3, 1), (18, 4, 1),
 (19, 4, 1), (19, 5, 1),
 (20, 5, 1), (20, 1, 1);
+
+CREATE TABLE chave_acesso (
+    id INT GENERATED ALWAYS AS IDENTITY,
+    chave CHAR(32),
+    descricao VARCHAR(100),
+    data_criacao TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO chave_acesso (chave, descricao) VALUES
+('974ff5366ebab83585cf8406e8548ca3', 'Administrador');

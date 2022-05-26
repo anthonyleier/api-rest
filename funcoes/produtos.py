@@ -1,4 +1,4 @@
-from config import baseDelivery
+from config import baseDelivery, chaveNecessaria
 
 
 def getProduto(id):
@@ -14,6 +14,7 @@ def getListaProdutos():
     return listaProdutos
 
 
+@chaveNecessaria
 def criarProduto(nome, descricao, valor, imagem):
     query = "INSERT INTO produto (nome, descricao, valor, imagem) VALUES (%s, %s, %s, %s) RETURNING id;"
     parametros = [nome, descricao, valor, imagem]
@@ -24,6 +25,7 @@ def criarProduto(nome, descricao, valor, imagem):
     return dadosProduto
 
 
+@chaveNecessaria
 def atualizarProduto(nome, descricao, valor, imagem, id):
     query = "UPDATE produto SET nome = %s, descricao = %s, valor = %s, imagem = %s WHERE id = %s;"
     parametros = [nome, descricao, valor, imagem, id]
@@ -33,6 +35,7 @@ def atualizarProduto(nome, descricao, valor, imagem, id):
     return dadosProduto
 
 
+@chaveNecessaria
 def deletarProduto(id):
     query = "DELETE FROM produto WHERE id = %s;"
     parametros = [id]
