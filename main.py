@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from config import baseDelivery
+from utils import baseDelivery
 from api.pedidos import Pedidos, PedidoPorID
 from api.usuarios import Usuarios, UsuarioPorID
 from api.produtos import Produtos, ProdutoPorID

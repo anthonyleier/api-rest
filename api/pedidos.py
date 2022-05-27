@@ -1,4 +1,5 @@
-from flask import request, jsonify, make_response, Response
+from flask import request
+from utils import montarResposta
 from flask_restful import Resource
 from funcoes.pedidos import getListaPedidos, criarPedido
 from funcoes.pedidos import getPedido, atualizarProdutoPedido, deletarPedido
@@ -7,70 +8,39 @@ from funcoes.pedidos import getPedido, atualizarProdutoPedido, deletarPedido
 class Pedidos(Resource):
     def get(self):
         listaPedidos = getListaPedidos()
-        json = jsonify(listaPedidos)
-        resposta = make_response(json, 200)
+        resposta = montarResposta(listaPedidos)
         return resposta
 
     def post(self):
-        usuario = request.json['usuario']
-        produtos = request.json['produtos']
-        quantidades = request.json['quantidades']
-        pedido = criarPedido(usuario, produtos, quantidades)
-
-        if isinstance(pedido, dict):
-            json = jsonify(pedido)
-            resposta = make_response(json, 201)
-        elif isinstance(pedido, Response):
-            resposta = pedido
-        else:
-            mensagem = "Ocorreu um erro ao processar este pedido"
-            statusCode = 500
-            resposta = make_response({"mensagem": mensagem}, statusCode)
-
-        return resposta
+        try:
+            usuario = request.json['usuario']
+            produtos = request.json['produtos']
+            quantidades = request.json['quantidades']
+            pedido = criarPedido(usuario, produtos, quantidades)
+            resposta = montarResposta(pedido)
+            return resposta
+        except:
+            return {'mensagem': 'Erro na aplicação: campos faltantes'}, 500
 
 
 class PedidoPorID(Resource):
     def get(self, id):
         pedido = getPedido(id)
-
-        if pedido:
-            json = jsonify(pedido)
-            resposta = make_response(json, 200)
-        else:
-            mensagem = "Pedido não encontrado"
-            statusCode = 404
-            resposta = make_response({"mensagem": mensagem}, statusCode)
-
+        resposta = montarResposta(pedido)
         return resposta
 
     def put(self, id):
-        usuario = request.json['usuario']
-        produtos = request.json['produtos']
-        quantidades = request.json['quantidades']
-        pedido = atualizarProdutoPedido(usuario, produtos, quantidades, id)
-
-        if isinstance(pedido, dict):
-            json = jsonify(pedido)
-            resposta = make_response(json, 200)
-        elif isinstance(pedido, Response):
-            resposta = pedido
-        else:
-            mensagem = "Ocorreu um erro ao processar este pedido"
-            statusCode = 500
-            resposta = make_response({"mensagem": mensagem}, statusCode)
-
-        return resposta
+        try:
+            usuario = request.json['usuario']
+            produtos = request.json['produtos']
+            quantidades = request.json['quantidades']
+            pedido = atualizarProdutoPedido(usuario, produtos, quantidades, id)
+            resposta = montarResposta(pedido)
+            return resposta
+        except:
+            return {'mensagem': 'Erro na aplicação: campos faltantes'}, 500
 
     def delete(self, id):
         pedido = deletarPedido(id)
-
-        if pedido:
-            json = jsonify(pedido)
-            resposta = make_response(json, 200)
-        else:
-            mensagem = "Pedido não encontrado"
-            statusCode = 404
-            resposta = make_response({"mensagem": mensagem}, statusCode)
-
+        resposta = montarResposta(pedido)
         return resposta

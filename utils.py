@@ -1,5 +1,6 @@
 import os
 from banco import Banco
+from flask import jsonify, Response
 from flask import request, make_response
 
 
@@ -29,3 +30,19 @@ def chaveNecessaria(funcao):
         else:
             return acessoBloqueado()
     return verificarChave
+
+
+def montarResposta(recurso):
+    if isinstance(recurso, dict) or isinstance(recurso, list) or isinstance(recurso, bool):
+        json = jsonify(recurso)
+        resposta = make_response(json, 200)
+
+    elif isinstance(recurso, Response):
+        resposta = recurso
+
+    else:
+        mensagem = "Ocorreu um erro ao processar este recurso"
+        statusCode = 500
+        resposta = make_response({"mensagem": mensagem}, statusCode)
+
+    return resposta

@@ -1,5 +1,5 @@
 from funcoes.usuarios import getUsuario
-from config import baseDelivery, chaveNecessaria
+from utils import baseDelivery, chaveNecessaria
 
 
 def getPedido(id):
@@ -16,8 +16,7 @@ def getPedido(id):
     parametros = [id]
     dados = baseDelivery.selecionar(query, parametros)
 
-    if dados:
-        return dados[0]
+    return dados[0] if dados else None
 
 
 def getListaPedidos():

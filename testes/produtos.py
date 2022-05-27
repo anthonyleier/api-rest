@@ -4,6 +4,7 @@ import requests
 
 dominio = "http://localhost:5000/"
 autenticacao = {'api_key': '974ff5366ebab83585cf8406e8548ca3', 'Content-Type': 'application/json'}
+jsonErro = {"mensagem": "Ocorreu um erro ao processar este recurso"}
 
 
 class ProdutoTestes(unittest.TestCase):
@@ -23,7 +24,7 @@ class ProdutoTestes(unittest.TestCase):
         request = requests.post(url, json=json)
 
         requestJSON = request.json()
-        cls.pedidoExemplo = requestJSON['id']
+        cls.produtoExemplo = requestJSON['id']
 
     def test_getProduto(self):
         produtoTeste = {
@@ -100,7 +101,7 @@ class ProdutoTestes(unittest.TestCase):
         requestJSON.pop('id', None)
 
         self.assertEqual(produtoTeste, requestJSON)
-        self.assertEqual(201, statusCode)
+        self.assertEqual(200, statusCode)
 
     def test_atualizarProduto(self):
         produtoTeste = {
@@ -124,7 +125,7 @@ class ProdutoTestes(unittest.TestCase):
         self.assertEqual(200, statusCode)
 
     def test_deletarProduto(self):
-        endpoint = f"produtos/{self.pedidoExemplo}"
+        endpoint = f"produtos/{self.produtoExemplo}"
         url = dominio + endpoint
 
         json = {**autenticacao}
@@ -139,8 +140,6 @@ class ProdutoTestes(unittest.TestCase):
 
 class ProdutoTestesFalhas(unittest.TestCase):
     def test_getProduto_inexistente(self):
-        jsonEsperado = {"mensagem": "Produto não encontrado"}
-
         endpoint = "produtos/456"
         url = dominio + endpoint
 
@@ -148,12 +147,10 @@ class ProdutoTestesFalhas(unittest.TestCase):
         statusCode = request.status_code
         requestJSON = request.json()
 
-        self.assertEqual(jsonEsperado, requestJSON)
-        self.assertEqual(404, statusCode)
+        self.assertEqual(jsonErro, requestJSON)
+        self.assertEqual(500, statusCode)
 
     def test_criarProduto_valorNegativo(self):
-        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
-
         produtoTeste = {
             "nome": 'X-Contra Filé',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
@@ -170,12 +167,33 @@ class ProdutoTestesFalhas(unittest.TestCase):
         statusCode = request.status_code
         requestJSON = request.json()
 
-        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(jsonErro, requestJSON)
         self.assertEqual(500, statusCode)
 
-    def test_atualizarProduto_inexistente(self):
-        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
+    def test_criarProduto_chaveInvalida(self):
+        jsonErro = {'mensagem': 'API Key não reconhecida. Por favor, utilize uma API Key válida.'}
 
+        produtoTeste = {
+            "nome": 'X-Contra Filé',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
+            "valor": -50,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
+        }
+
+        endpoint = "produtos"
+        url = dominio + endpoint
+
+        autenticacao = {'api_key': '2fb74eed31df38eead96278c6349b8fe', 'Content-Type': 'application/json'}
+        json = {**produtoTeste, **autenticacao}
+        request = requests.post(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonErro, requestJSON)
+        self.assertEqual(400, statusCode)
+
+    def test_atualizarProduto_inexistente(self):
         produtoTeste = {
             "nome": 'X-Picanha',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
@@ -192,12 +210,10 @@ class ProdutoTestesFalhas(unittest.TestCase):
         statusCode = request.status_code
         requestJSON = request.json()
 
-        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(jsonErro, requestJSON)
         self.assertEqual(500, statusCode)
 
     def test_atualizarProduto_valorNegativo(self):
-        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
-
         produtoTeste = {
             "nome": 'X-Picanha',
             "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
@@ -214,12 +230,10 @@ class ProdutoTestesFalhas(unittest.TestCase):
         statusCode = request.status_code
         requestJSON = request.json()
 
-        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(jsonErro, requestJSON)
         self.assertEqual(500, statusCode)
 
     def test_deletarProduto_inexistente(self):
-        jsonEsperado = {"mensagem": "Produto não encontrado"}
-
         endpoint = "produtos/45678"
         url = dominio + endpoint
 
@@ -229,8 +243,8 @@ class ProdutoTestesFalhas(unittest.TestCase):
         statusCode = request.status_code
         requestJSON = request.json()
 
-        self.assertEqual(jsonEsperado, requestJSON)
-        self.assertEqual(404, statusCode)
+        self.assertEqual(jsonErro, requestJSON)
+        self.assertEqual(500, statusCode)
 
 
 if __name__ == '__main__':
