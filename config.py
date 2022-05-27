@@ -1,10 +1,11 @@
+import os
 from banco import Banco
 from flask import request, make_response
 
-ipAcesso = 'database'
-nomeBanco = 'delivery'
 
-baseDelivery = Banco(ipAcesso, nomeBanco)
+database_host = os.getenv('DATABASE_HOST', 'database')
+database_nome = os.getenv('DATABASE_NOME', 'delivery')
+baseDelivery = Banco(database_host, database_nome)
 
 
 def validarChave(apiKey):

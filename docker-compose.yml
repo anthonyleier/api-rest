@@ -16,6 +16,8 @@ services:
         build: .
         environment:
             - FLASK_ENV=development
+            - DATABASE_HOST=database
+            - DATABASE_NOME=delivery
         ports:
             - 5000:5000
         volumes:

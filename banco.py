@@ -7,8 +7,8 @@ class Banco:
         try:
             self.conexao = psycopg2.connect(host=host, database=database, user="postgres", password="postgres")
             self.cursor = self.conexao.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        except Exception as erro:
-            print("Não foi possivel conectar ao banco de dados.", erro)
+        except:
+            print("Não foi possivel conectar ao banco de dados.")
 
     def selecionar(self, query, parametros=None):
         try:
