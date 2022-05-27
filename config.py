@@ -8,6 +8,13 @@ database_nome = os.getenv('DATABASE_NOME', 'delivery')
 baseDelivery = Banco(database_host, database_nome)
 
 
+def acessoBloqueado():
+    mensagem = "API Key não reconhecida. Por favor, utilize uma API Key válida."
+    statusCode = 400
+    resposta = make_response({"mensagem": mensagem}, statusCode)
+    return resposta
+
+
 def validarChave(apiKey):
     query = "SELECT chave FROM chave_acesso;"
     chaves = baseDelivery.selecionar(query)
@@ -17,15 +24,8 @@ def validarChave(apiKey):
 
 def chaveNecessaria(funcao):
     def verificarChave(*args, **kwargs):
-        if request.json:
-            apiKey = request.json.get("api_key")
-
-            if validarChave(apiKey):
-                return funcao(*args, **kwargs)
+        if request.json and validarChave(request.json.get("api_key")):
+            return funcao(*args, **kwargs)
         else:
-            mensagem = "API Key não reconhecida. Por favor, utilize uma API Key válida."
-            statusCode = 400
-            resposta = make_response({"mensagem": mensagem}, statusCode)
-            return resposta
-
+            return acessoBloqueado()
     return verificarChave
