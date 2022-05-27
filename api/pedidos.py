@@ -17,9 +17,11 @@ class Pedidos(Resource):
         quantidades = request.json['quantidades']
         pedido = criarPedido(usuario, produtos, quantidades)
 
-        if pedido:
+        if isinstance(pedido, dict):
             json = jsonify(pedido)
             resposta = make_response(json, 201)
+        elif isinstance(pedido, Response):
+            resposta = pedido
         else:
             mensagem = "Ocorreu um erro ao processar este pedido"
             statusCode = 500

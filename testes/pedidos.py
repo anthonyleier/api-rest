@@ -216,7 +216,7 @@ class PedidoTestesFalhas(unittest.TestCase):
         requestJSON = request.json()
         cls.pedidoExemplo2 = requestJSON['id']
 
-    def test_getPedido(self):
+    def test_getPedido_inexistente(self):
         jsonEsperado = {"mensagem": "Pedido não encontrado"}
 
         endpoint = "pedidos/1258"
@@ -229,7 +229,7 @@ class PedidoTestesFalhas(unittest.TestCase):
         self.assertEqual(jsonEsperado, requestJSON)
         self.assertEqual(404, statusCode)
 
-    def test_criarPedido(self):
+    def test_criarPedido_quantidadeNegativa(self):
         jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este pedido"}
 
         pedidoTeste = {
@@ -250,7 +250,28 @@ class PedidoTestesFalhas(unittest.TestCase):
         self.assertEqual(jsonEsperado, requestJSON)
         self.assertEqual(500, statusCode)
 
-    def test_atualizarProdutoPedido(self):
+    def test_atualizarProdutoPedido_inexistente(self):
+        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este pedido"}
+
+        produtoTeste = {
+            "usuario": 5,
+            "produtos": [2, 4, 5],
+            "quantidades": [-2, -2, -2]
+        }
+
+        endpoint = f"pedidos/7865"
+        url = dominio + endpoint
+
+        json = {**produtoTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(500, statusCode)
+
+    def test_atualizarProdutoPedido_usuarioInexistente(self):
         jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este pedido"}
 
         produtoTeste = {
@@ -271,7 +292,7 @@ class PedidoTestesFalhas(unittest.TestCase):
         self.assertEqual(jsonEsperado, requestJSON)
         self.assertEqual(500, statusCode)
 
-    def test_atualizarProdutoPedido_remover(self):
+    def test_atualizarProdutoPedido_chaveInvalida(self):
         jsonEsperado = {"mensagem": "API Key não reconhecida. Por favor, utilize uma API Key válida."}
 
         produtoTeste = {
@@ -293,7 +314,7 @@ class PedidoTestesFalhas(unittest.TestCase):
         self.assertEqual(jsonEsperado, requestJSON)
         self.assertEqual(400, statusCode)
 
-    def test_excluirPedido(self):
+    def test_excluirPedido_inexistente(self):
         jsonEsperado = {"mensagem": "Pedido não encontrado"}
 
         endpoint = "pedidos/598"

@@ -7,6 +7,24 @@ autenticacao = {'api_key': '974ff5366ebab83585cf8406e8548ca3', 'Content-Type': '
 
 
 class ProdutoTestes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        produtoTeste = {
+            "nome": 'X-Contra Filé',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
+            "valor": 19.0,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
+        }
+
+        endpoint = "produtos"
+        url = dominio + endpoint
+
+        json = {**produtoTeste, **autenticacao}
+        request = requests.post(url, json=json)
+
+        requestJSON = request.json()
+        cls.pedidoExemplo = requestJSON['id']
+
     def test_getProduto(self):
         produtoTeste = {
             "id": 1,
@@ -106,7 +124,7 @@ class ProdutoTestes(unittest.TestCase):
         self.assertEqual(200, statusCode)
 
     def test_deletarProduto(self):
-        endpoint = "produtos/6"
+        endpoint = f"produtos/{self.pedidoExemplo}"
         url = dominio + endpoint
 
         json = {**autenticacao}
@@ -117,6 +135,102 @@ class ProdutoTestes(unittest.TestCase):
 
         self.assertTrue(requestJSON)
         self.assertEqual(200, statusCode)
+
+
+class ProdutoTestesFalhas(unittest.TestCase):
+    def test_getProduto_inexistente(self):
+        jsonEsperado = {"mensagem": "Produto não encontrado"}
+
+        endpoint = "produtos/456"
+        url = dominio + endpoint
+
+        request = requests.get(url)
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(404, statusCode)
+
+    def test_criarProduto_valorNegativo(self):
+        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
+
+        produtoTeste = {
+            "nome": 'X-Contra Filé',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e contra filé.',
+            "valor": -50,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/602ff28c23895.png'
+        }
+
+        endpoint = "produtos"
+        url = dominio + endpoint
+
+        json = {**produtoTeste, **autenticacao}
+        request = requests.post(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(500, statusCode)
+
+    def test_atualizarProduto_inexistente(self):
+        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
+
+        produtoTeste = {
+            "nome": 'X-Picanha',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
+            "valor": 20,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/6021880d5b686.png'
+        }
+
+        endpoint = "produtos/478"
+        url = dominio + endpoint
+
+        json = {**produtoTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(500, statusCode)
+
+    def test_atualizarProduto_valorNegativo(self):
+        jsonEsperado = {"mensagem": "Ocorreu um erro ao processar este produto"}
+
+        produtoTeste = {
+            "nome": 'X-Picanha',
+            "descricao": 'Pão, maionese, alface, tomate, queijo, hambúrguer artesanal, ovo e picanha.',
+            "valor": -20,
+            "imagem": 'https://static.deliverymuch.com.br/images/products/6021880d5b686.png'
+        }
+
+        endpoint = "produtos/4"
+        url = dominio + endpoint
+
+        json = {**produtoTeste, **autenticacao}
+        request = requests.put(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(500, statusCode)
+
+    def test_deletarProduto_inexistente(self):
+        jsonEsperado = {"mensagem": "Produto não encontrado"}
+
+        endpoint = "produtos/45678"
+        url = dominio + endpoint
+
+        json = {**autenticacao}
+        request = requests.delete(url, json=json)
+
+        statusCode = request.status_code
+        requestJSON = request.json()
+
+        self.assertEqual(jsonEsperado, requestJSON)
+        self.assertEqual(404, statusCode)
 
 
 if __name__ == '__main__':

@@ -57,7 +57,7 @@ def criarPedido(usuario, produtos, quantidades):
 
 @chaveNecessaria
 def atualizarProdutoPedido(usuario, produtos, quantidades, id):
-    if getUsuario(usuario):
+    if getPedido(id) and getUsuario(usuario):
         query = "UPDATE pedido SET usuario = %s WHERE id = %s;"
         parametros = [usuario, id]
         baseDelivery.executar(query, parametros)
