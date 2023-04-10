@@ -4,9 +4,7 @@ Este é um projeto de API REST desenvolvida em Flask, um framework Python que se
 
 # Instalação Docker
 
-Para iniciar o projeto através do Docker, é necessário certificar de que o Docker e o Docker Compose estejam instalados em seu sistema.
-
-Após isso garantir executar docker-compose up com privilégios de administrador na pasta do repositório para iniciar os containers do projeto.
+Para iniciar o projeto através do Docker, é necessário certificar de que o Docker e o Docker Compose estejam instalados em seu sistema. Após isso, é necessário executar o comando "docker-compose up" com privilégios de administrador na pasta do repositório para iniciar os containers do projeto.
 
 ``` docker-compose up ```
 
@@ -14,7 +12,7 @@ O comando "docker-compose up" é usado para iniciar e executar todos os contêin
 
 # Instalação Manual
 
-O comando pip install é utilizado para instalar pacotes Python em um ambiente virtual ou sistema operacional. Nesse exemplo, estamos instalando três pacotes Python especificos: psycopg2, flask e flask_restful.
+O comando "pip install" é utilizado para instalar pacotes Python em um ambiente virtual ou sistema operacional. Nesse exemplo, estamos instalando três pacotes Python especificos: psycopg2, flask e flask_restful.
 
 ``` pip install psycopg2==2.9.3 flask==2.1.2 flask_restful==0.3.9 ```
 
