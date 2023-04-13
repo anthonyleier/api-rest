@@ -3,8 +3,8 @@ import psycopg2.extras
 
 
 class Banco:
-    def __init__(self, host, database, user, password):
-        self.conexao = psycopg2.connect(host=host, database=database, user=user, password=password)
+    def __init__(self, host, database, user, password, port):
+        self.conexao = psycopg2.connect(host=host, database=database, user=user, password=password, port=port)
         self.cursor = self.conexao.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
     def selecionar(self, query, parametros=None):
