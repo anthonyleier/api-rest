@@ -2,11 +2,16 @@ import os
 from banco import Banco
 from flask import jsonify, Response
 from flask import request, make_response
+from dotenv import load_dotenv
 
 
-database_host = os.getenv('DATABASE_HOST', 'database')
-database_nome = os.getenv('DATABASE_NOME', 'delivery')
-baseDelivery = Banco(database_host, database_nome)
+load_dotenv()
+DATABASE_NAME = os.environ.get('DATABASE_NAME')
+DATABASE_USER = os.environ.get('DATABASE_USER')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
+DATABASE_HOST = os.environ.get('DATABASE_HOST')
+DATABASE_PORT = os.environ.get('DATABASE_PORT')
+baseDelivery = Banco(host=DATABASE_HOST, database=DATABASE_NAME, user=DATABASE_USER, password=DATABASE_PASSWORD)
 
 
 def acessoBloqueado():
