@@ -3,9 +3,9 @@
 Este é um projeto de API REST desenvolvida em Flask, um framework Python que serve para criar aplicações web e APIs. Com esta API, é possível criar e gerenciar produtos, pedidos e usuários em um sistema de delivery. A API é baseada no padrão REST e implementa os verbos HTTP para manipulação de dados, tais como GET, POST, PUT e DELETE. Ela também é compatível com JSON, permitindo a troca de informações de forma fácil e eficiente. Além disso, o projeto conta com testes automatizados utilizando a biblioteca unittest e pode ser implementado via docker para garantir a facilidade de instalação e execução em diferentes ambientes. Este projeto foi desenvolvido com base nas melhores práticas de desenvolvimento e utiliza tecnologias modernas e de alta performance para garantir a melhor experiência possível aos usuários finais. Fique à vontade para utilizar, contribuir e melhorar este projeto!
 
 # Exemplos
-- ``` https://deliveryapi.anthonycruz.com.br/usuarios ```
-- ``` https://deliveryapi.anthonycruz.com.br/produtos ```
-- ``` https://deliveryapi.anthonycruz.com.br/pedidos ```
+- ``` http://localhost:5000/usuarios ```
+- ``` http://localhost:5000/produtos ```
+- ``` http://localhost:5000/pedidos ```
 
 # Instalação Docker
 
